@@ -1,0 +1,86 @@
+[
+  {
+    "objectID": "r/05_final_report.html",
+    "href": "r/05_final_report.html",
+    "title": "Clinical Trial Efficacy and Safety Analysis",
+    "section": "",
+    "text": "This report presents a reproducible efficacy and safety analysis using the publicly available CDISC ADaM Pilot 01 clinical trial data.\nThe analysis included 254 participants:\n\n86 assigned to placebo;\n84 assigned to Xanomeline High Dose; and\n84 assigned to Xanomeline Low Dose.\n\nNeither Xanomeline dose demonstrated a statistically significant adjusted efficacy difference compared with placebo at Week 24.\nTreatment-emergent adverse events were more frequent in both Xanomeline groups than in the placebo group. Study discontinuation was also substantially higher, while Week 24 completion was lower, in both active treatment groups.\nOverall, the findings suggest an uncertain efficacy signal accompanied by a less favourable tolerability profile for Xanomeline."
+  },
+  {
+    "objectID": "r/05_final_report.html#data-source",
+    "href": "r/05_final_report.html#data-source",
+    "title": "Clinical Trial Efficacy and Safety Analysis",
+    "section": "Data source",
+    "text": "Data source\nThe analysis used publicly available CDISC ADaM Pilot 01 datasets.\nThe principal analysis datasets were:\n\nADSL for participant-level information and treatment assignment;\nADQSADAS for ADAS-Cog(11) efficacy assessments; and\nADAE for adverse-event analyses.\n\nRaw data were imported and processed in earlier project notebooks. Notebook 5 uses the analysis outputs created by those notebooks."
+  },
+  {
+    "objectID": "r/05_final_report.html#analysis-populations",
+    "href": "r/05_final_report.html#analysis-populations",
+    "title": "Clinical Trial Efficacy and Safety Analysis",
+    "section": "Analysis populations",
+    "text": "Analysis populations\nThe baseline and efficacy analyses included the 254 randomised participants represented in the subject-level analysis dataset.\nThe safety analysis used participants included in the safety population and their actual treatment assignments."
+  },
+  {
+    "objectID": "r/05_final_report.html#efficacy-endpoint",
+    "href": "r/05_final_report.html#efficacy-endpoint",
+    "title": "Clinical Trial Efficacy and Safety Analysis",
+    "section": "Efficacy endpoint",
+    "text": "Efficacy endpoint\nThe efficacy endpoint was the ADAS-Cog(11) total score.\nHigher ADAS-Cog(11) scores indicate greater cognitive impairment. Therefore, an increase from baseline represents worsening, while a negative active-treatment difference relative to placebo numerically favours Xanomeline."
+  },
+  {
+    "objectID": "r/05_final_report.html#statistical-methods",
+    "href": "r/05_final_report.html#statistical-methods",
+    "title": "Clinical Trial Efficacy and Safety Analysis",
+    "section": "Statistical methods",
+    "text": "Statistical methods\nContinuous baseline variables were summarised using medians and interquartile ranges. Categorical variables were summarised using counts and percentages.\nThe adjusted Week 24 efficacy model included:\n\ntreatment group;\nbaseline ADAS-Cog(11) score;\nage; and\nsex.\n\nPlacebo was used as the reference treatment.\nAdjusted treatment effects are presented with standard errors, 95% confidence intervals, and exploratory p-values.\nSafety outcomes were summarised as the number and percentage of participants with at least one event."
+  },
+  {
+    "objectID": "r/05_final_report.html#adas-cog11-trajectory",
+    "href": "r/05_final_report.html#adas-cog11-trajectory",
+    "title": "Clinical Trial Efficacy and Safety Analysis",
+    "section": "ADAS-Cog(11) trajectory",
+    "text": "ADAS-Cog(11) trajectory\nThe following figure presents the unadjusted mean ADAS-Cog(11) score over time by treatment group.\n\n\n\n\n\n\n\n\nFigure 1: Mean ADAS-Cog(11) score over time by treatment group.\n\n\n\n\n\nMean ADAS-Cog(11) scores increased over time in all treatment groups, indicating worsening cognitive performance.\nThe raw trajectory should not be interpreted as an adjusted treatment comparison because treatment groups differed slightly in their baseline scores."
+  },
+  {
+    "objectID": "r/05_final_report.html#adjusted-week-24-treatment-effects",
+    "href": "r/05_final_report.html#adjusted-week-24-treatment-effects",
+    "title": "Clinical Trial Efficacy and Safety Analysis",
+    "section": "Adjusted Week 24 treatment effects",
+    "text": "Adjusted Week 24 treatment effects\n\n\n\n\nTable 1: Adjusted Week 24 efficacy treatment effects relative to placebo.\n\n\n\n\n\n\n\n\n\nAdjusted Efficacy Treatment Effects\n\n\nTreatment comparisons relative to placebo\n\n\nComparison\nEstimate\nStd.error\nConf.low\nConf.high\nP.value\n\n\n\n\nXanomeline High Dose vs Placebo\n−1.085\n0.783\n−2.627\n0.458\n0.167\n\n\nXanomeline Low Dose vs Placebo\n−0.541\n0.776\n−2.070\n0.988\n0.486\n\n\n\n\n\n\n\n\n\n\nFor Xanomeline High Dose versus placebo, the adjusted difference was −1.085 points, with a 95% confidence interval from −2.627 to 0.458 and a p-value of 0.167.\nFor Xanomeline Low Dose versus placebo, the adjusted difference was −0.541 points, with a 95% confidence interval from −2.070 to 0.988 and a p-value of 0.486.\nBoth adjusted estimates numerically favoured Xanomeline because they were negative. However, both confidence intervals included zero, and neither comparison was statistically significant.\nThe analysis therefore did not provide conclusive evidence of a Week 24 treatment effect for either Xanomeline dose."
+  },
+  {
+    "objectID": "r/05_final_report.html#common-treatment-emergent-adverse-events",
+    "href": "r/05_final_report.html#common-treatment-emergent-adverse-events",
+    "title": "Clinical Trial Efficacy and Safety Analysis",
+    "section": "Common treatment-emergent adverse events",
+    "text": "Common treatment-emergent adverse events\nThe following figure presents the most frequently reported treatment-emergent adverse events by treatment group.\n\n\n\n\n\n\n\n\nFigure 2: Most common treatment-emergent adverse events by treatment group.\n\n\n\n\n\nSeveral dermatological and application-site events were more frequent in the Xanomeline treatment groups than in the placebo group."
+  },
+  {
+    "objectID": "r/05_final_report.html#overall-safety-summary",
+    "href": "r/05_final_report.html#overall-safety-summary",
+    "title": "Clinical Trial Efficacy and Safety Analysis",
+    "section": "Overall safety summary",
+    "text": "Overall safety summary\n\n\n\n\nTable 2: Participants with at least one treatment-emergent adverse event.\n\n\n\n\n\n\n\n\n\nOverall Treatment-Emergent Adverse Event Summary\n\n\nParticipants with at least one event, n (%)\n\n\nTreatment\nMeasure\nParticipants\nDenominator\nPercent\n\n\n\n\nPlacebo\nAt least one TEAE\n65\n86\n75.581395\n\n\nXanomeline High Dose\nAt least one TEAE\n76\n84\n90.476190\n\n\nXanomeline Low Dose\nAt least one TEAE\n77\n84\n91.666667\n\n\nPlacebo\nAt least one fatal TEAE\n2\n86\n2.325581\n\n\nXanomeline High Dose\nAt least one fatal TEAE\n0\n84\n0.000000\n\n\nXanomeline Low Dose\nAt least one fatal TEAE\n1\n84\n1.190476\n\n\nPlacebo\nAt least one possibly/probably related TEAE\n43\n86\n50.000000\n\n\nXanomeline High Dose\nAt least one possibly/probably related TEAE\n70\n84\n83.333333\n\n\nXanomeline Low Dose\nAt least one possibly/probably related TEAE\n72\n84\n85.714286\n\n\nPlacebo\nAt least one serious TEAE\n0\n86\n0.000000\n\n\nXanomeline High Dose\nAt least one serious TEAE\n2\n84\n2.380952\n\n\nXanomeline Low Dose\nAt least one serious TEAE\n1\n84\n1.190476\n\n\nPlacebo\nAt least one severe TEAE\n5\n86\n5.813953\n\n\nXanomeline High Dose\nAt least one severe TEAE\n8\n84\n9.523810\n\n\nXanomeline Low Dose\nAt least one severe TEAE\n16\n84\n19.047619\n\n\n\n\n\n\n\n\n\n\nAt least one treatment-emergent adverse event occurred in:\n\n75.6% of placebo participants;\n90.5% of Xanomeline High Dose participants; and\n91.7% of Xanomeline Low Dose participants.\n\nPossibly or probably treatment-related events occurred in:\n\n50.0% of placebo participants;\n83.3% of Xanomeline High Dose participants; and\n85.7% of Xanomeline Low Dose participants.\n\nAt least one severe treatment-emergent adverse event occurred in:\n\n5.8% of placebo participants;\n9.5% of Xanomeline High Dose participants; and\n19.0% of Xanomeline Low Dose participants.\n\nThese findings indicate a less favourable adverse-event profile for both Xanomeline treatment groups."
+  },
+  {
+    "objectID": "r/05_final_report.html#study-discontinuation",
+    "href": "r/05_final_report.html#study-discontinuation",
+    "title": "Clinical Trial Efficacy and Safety Analysis",
+    "section": "Study discontinuation",
+    "text": "Study discontinuation\n\n\n\n\nTable 3: Study discontinuation by treatment group.\n\n\n\n\n\n\n\n\n\nStudy Discontinuation Summary\n\n\nTreatment\nParticipants\nDenominator\nPercent\n\n\n\n\nPlacebo\n28\n86\n32.55814\n\n\nXanomeline High Dose\n57\n84\n67.85714\n\n\nXanomeline Low Dose\n59\n84\n70.23810\n\n\n\n\n\n\n\n\n\n\nStudy discontinuation occurred in:\n\n32.6% of placebo participants;\n67.9% of Xanomeline High Dose participants; and\n70.2% of Xanomeline Low Dose participants.\n\nDiscontinuation was therefore more than twice as frequent in both Xanomeline groups as in the placebo group.\nThe available adverse-event data did not support determining which study discontinuations were specifically caused by an adverse event because the adverse-event action variable was missing."
+  },
+  {
+    "objectID": "r/05_final_report.html#week-24-completion",
+    "href": "r/05_final_report.html#week-24-completion",
+    "title": "Clinical Trial Efficacy and Safety Analysis",
+    "section": "Week 24 completion",
+    "text": "Week 24 completion\n\n\n\n\nTable 4: Week 24 completion by treatment group.\n\n\n\n\n\n\n\n\n\nWeek 24 Completion Summary\n\n\nTreatment\nCompleted\nDenominator\nPercent\n\n\n\n\nPlacebo\n60\n86\n69.76744\n\n\nXanomeline High Dose\n30\n84\n35.71429\n\n\nXanomeline Low Dose\n28\n84\n33.33333\n\n\n\n\n\n\n\n\n\n\nWeek 24 completion was achieved by:\n\n69.8% of placebo participants;\n35.7% of Xanomeline High Dose participants; and\n33.3% of Xanomeline Low Dose participants.\n\nThe lower completion rates in the active-treatment groups correspond with their substantially higher discontinuation rates."
+  },
+  {
+    "objectID": "r/06_aws_deployment.html",
+    "href": "r/06_aws_deployment.html",
+    "title": "AWS Deployment",
+    "section": "",
+    "text": "Overview\nThis notebook documents the deployment of the final CDISC ADaM Pilot 01 clinical trial report as a static website using Amazon Simple Storage Service, or Amazon S3.\nThe analytical work and final report were created locally using R and Quarto. The rendered, self-contained HTML report was then deployed to Amazon S3 for public portfolio access.\n\n\nDeployment architecture\nThe deployment workflow was:\n\nAnalysis datasets were processed in R.\nTables and figures were generated in R.\nQuarto rendered the final report as a self-contained HTML file.\nThe report was copied and renamed to index.html.\nThe file was uploaded to an Amazon S3 bucket.\nStatic website hosting was enabled for the bucket.\nPublic read access was configured for the website object.\nThe S3 website endpoint was tested in a web browser.\n\n\n\nLocal report preparation\n\n\nCode\nlibrary(here)\n\nreport_path &lt;- here(\n  \"reports\",\n  \"r\",\n  \"05_final_report.html\"\n)\n\nfile.exists(report_path)\n\n\n[1] TRUE\n\n\nCode\nfile.info(report_path)[\n  ,\n  c(\n    \"size\",\n    \"mtime\"\n  )\n]\n\n\n                                                                        size\nE:/clinical-trial-analytics-r-sas-aws/reports/r/05_final_report.html 2720423\n                                                                                   mtime\nE:/clinical-trial-analytics-r-sas-aws/reports/r/05_final_report.html 2026-07-28 18:44:34\n\n\n\n\nPrepare the deployment directory\n\n\nCode\ndeployment_directory &lt;- here(\"aws-site\")\n\ndir.create(\n  deployment_directory,\n  showWarnings = FALSE,\n  recursive = TRUE\n)\n\ndeployment_file &lt;- file.path(\n  deployment_directory,\n  \"index.html\"\n)\n\nfile.copy(\n  from = report_path,\n  to = deployment_file,\n  overwrite = TRUE\n)\n\n\n[1] TRUE\n\n\nCode\nstopifnot(\n  file.exists(deployment_file)\n)\n\nfile.info(deployment_file)[\n  ,\n  c(\n    \"size\",\n    \"mtime\"\n  )\n]\n\n\n                                                             size\nE:/clinical-trial-analytics-r-sas-aws/aws-site/index.html 2720423\n                                                                        mtime\nE:/clinical-trial-analytics-r-sas-aws/aws-site/index.html 2026-07-28 22:25:50\n\n\n\n\nAWS service\nAmazon S3 was used to host the final static HTML report.\nA general-purpose S3 bucket was created for this portfolio project. The self-contained report was uploaded as index.html, and static website hosting was configured with index.html as the index document.\nThe deployment used only public-read permission for the hosted report. No AWS access keys, passwords, or confidential data were stored in the project repository.\n\n\nDeployed asset\nThe deployed website contains the final integrated clinical report, including:\n\nstudy background and objectives;\nanalysis methods;\nadjusted efficacy results;\ntreatment-emergent adverse-event summaries;\ndiscontinuation and completion summaries;\ndata-quality observations;\nlimitations; and\nconclusions.\n\nBecause Quarto embedded the figures, styles, and supporting resources in the final HTML document, only one report file was required for the basic S3 deployment.\n\n\nValidation\nDeployment validation included:\n\nconfirming the local report existed;\nconfirming the copied index.html existed;\ncomparing local and deployment file sizes;\nconfirming the object was uploaded to S3;\nopening the S3 static website endpoint;\nchecking table-of-contents navigation;\nconfirming all tables rendered;\nconfirming both figures rendered; and\ntesting the website in a separate browser window.\n\n\n\nSecurity considerations\nOnly public portfolio outputs were deployed.\nThe following items were not uploaded:\n\nraw credentials;\nAWS access keys;\nlocal R session files;\nconfidential data;\nproject source datasets; and\nfiles containing personal or sensitive information.\n\n\n\nLimitations\nThe basic Amazon S3 website endpoint does not provide the same security and custom-domain features as a production website deployment.\nA future enhancement could use Amazon CloudFront to provide HTTPS, caching, and a secure distribution in front of a private S3 bucket.\n\n\nConclusion\nThe project demonstrates an end-to-end workflow covering clinical data analysis, reproducible reporting, and cloud-based publication.\nR and Quarto were used to create the analytical outputs and report, while Amazon S3 was used to deploy the final report as a static website."
+  }
+]

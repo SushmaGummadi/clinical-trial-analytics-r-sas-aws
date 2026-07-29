@@ -1,0 +1,22 @@
+project:
+  type: website
+  output-dir: reports
+
+website:
+  title: "Clinical Trial Analytics: R, SAS and AWS"
+  navbar:
+    left:
+      - href: r/05_final_report.qmd
+        text: Final report
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-fold: true
+
+execute:
+  warning: false
+  message: false
+  freeze: auto
+

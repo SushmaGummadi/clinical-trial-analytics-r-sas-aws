@@ -1,0 +1,71 @@
+---
+title: "03 — Efficacy analysis"
+format: html
+---
+
+```{r}
+library(tidyverse)
+library(here)
+library(broom)
+
+adsl <- read_csv(
+  here("data", "processed", "adsl_clean.csv"),
+  show_col_types = FALSE
+)
+
+eff <- read_csv(
+  here("data", "processed", "adqsadas_clean.csv"),
+  show_col_types = FALSE
+)
+
+trt <- intersect(c("trt01p", "trt01a"), names(adsl))[1]
+
+required <- c(
+  "usubjid",
+  "aval",
+  "base",
+  "chg",
+  "avisit",
+  "avisitn",
+  "param",
+  "paramcd",
+  "anl01fl"
+)
+
+if (is.na(trt) || !all(required %in% names(eff))) {
+  stop("Confirm endpoint, visit, treatment and analysis-flag mappings.")
+}
+```
+
+```{r}
+# EDIT after inspecting metadata; never choose a visit solely because it looks favorable.
+endpoint_code <- "ADASCOG"
+final_visit <- "Week 24"
+
+analysis <- eff |>
+  filter(paramcd == endpoint_code, avisit == final_visit) |>
+  inner_join(adsl |> select(usubjid, all_of(trt), any_of(c("age", "sex"))), by = "usubjid")
+if (!nrow(analysis)) stop("Endpoint/visit selection returned zero rows; inspect PARAMCD and AVISIT values")
+```
+
+```{r}
+trajectory <- eff |> filter(paramcd == endpoint_code) |>
+  inner_join(adsl |> select(usubjid, all_of(trt)), by = "usubjid") |>
+  group_by(.data[[trt]], avisit, avisitn) |>
+  summarise(mean = mean(aval, na.rm = TRUE), se = sd(aval, na.rm = TRUE)/sqrt(sum(!is.na(aval))), .groups = "drop")
+
+p <- ggplot(trajectory, aes(avisitn, mean, color = .data[[trt]])) +
+  geom_line() + geom_point() + geom_errorbar(aes(ymin = mean-se, ymax = mean+se), width = .2) +
+  labs(x = "Analysis visit", y = "Mean ADAS-Cog score", color = "Treatment") + theme_minimal()
+ggsave(here("outputs", "figures", "efficacy_trajectory.png"), p, width = 8, height = 5, dpi = 300)
+```
+
+```{r}
+model_formula <- reformulate(c(trt, "base", intersect(c("age", "sex"), names(analysis))), response = "chg")
+model <- lm(model_formula, data = analysis)
+tidy(model, conf.int = TRUE) |> write_csv(here("outputs", "tables", "efficacy_model.csv"))
+tidy(model, conf.int = TRUE)
+```
+
+Interpret the sign only after confirming the score direction and treatment reference level. Discuss effect size, confidence interval, available-case assumptions, and exploratory multiplicity.
+

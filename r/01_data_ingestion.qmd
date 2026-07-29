@@ -1,0 +1,58 @@
+---
+title: "01 — Data ingestion"
+format: html
+## Load required packages
+---
+
+
+```{r}
+library(tidyverse)
+library(haven)
+library(here)
+library(janitor)
+
+## Confirm that source files are available
+required_files <- c("adsl.xpt", "adae.xpt", "adqsadas.xpt")
+raw_paths <- here("data", "raw", required_files)
+missing_files <- required_files[!file.exists(raw_paths)]
+if (length(missing_files)) stop("Add to data/raw/: ", paste(missing_files, collapse = ", "))
+
+## Import and standardise the datasets
+read_adam <- function(filename) read_xpt(here("data", "raw", filename)) |> clean_names()
+adsl <- read_adam("adsl.xpt")
+adae <- read_adam("adae.xpt")
+adqsadas <- read_adam("adqsadas.xpt")
+```
+
+## Structure checks
+## Validate dataset dimensions and identifiers
+```{r}
+tibble(dataset = c("ADSL", "ADAE", "ADQSADAS"),
+       rows = c(nrow(adsl), nrow(adae), nrow(adqsadas)),
+       columns = c(ncol(adsl), ncol(adae), ncol(adqsadas)))
+
+stopifnot("usubjid" %in% names(adsl), !anyDuplicated(adsl$usubjid))
+list(ADSL = names(adsl), ADAE = names(adae), ADQSADAS = names(adqsadas))
+```
+
+## Missingness and treatment review
+## Review missing values
+```{r}
+adsl |> summarise(across(everything(), ~ sum(is.na(.x)))) |> pivot_longer(everything()) |>
+  arrange(desc(value)) |> slice_head(n = 20)
+
+## Review treatment assignments
+treatment_var <- intersect(c("trt01p", "trt01a"), names(adsl))[1]
+if (is.na(treatment_var)) stop("Confirm the treatment variable in docs/data_dictionary.md")
+adsl |> count(.data[[treatment_var]])
+```
+
+## Save clean copies
+
+```{r}
+dir.create(here("data", "processed"), recursive = TRUE, showWarnings = FALSE)
+write_csv(adsl, here("data", "processed", "adsl_clean.csv"))
+write_csv(adae, here("data", "processed", "adae_clean.csv"))
+write_csv(adqsadas, here("data", "processed", "adqsadas_clean.csv"))
+```
+

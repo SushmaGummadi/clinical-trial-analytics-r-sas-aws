@@ -1,0 +1,54 @@
+---
+title: "04 — Safety analysis"
+format: html
+---
+
+```{r}
+library(tidyverse)
+library(here)
+library(gt)
+
+adsl <- read_csv(
+  here("data", "processed", "adsl_clean.csv"),
+  show_col_types = FALSE
+)
+
+adae <- read_csv(
+  here("data", "processed", "adae_clean.csv"),
+  show_col_types = FALSE
+)
+
+required_adsl <- c("usubjid")
+required_adae <- c("usubjid", "aedecod")
+
+if (!all(required_adsl %in% names(adsl))) {
+  stop("ADSL is missing required subject identifiers.")
+}
+
+if (!all(required_adae %in% names(adae))) {
+  stop("ADAE is missing required adverse-event variables.")
+}
+
+safety <- adsl |> filter(if ("saffl" %in% names(adsl)) saffl == "Y" else TRUE)
+denoms <- safety |> count(.data[[trt]], name = "denominator")
+ae <- adae |> inner_join(safety |> select(usubjid, all_of(trt)), by = "usubjid")
+if ("trtemfl" %in% names(ae)) ae <- ae |> filter(trtemfl == "Y")
+```
+
+```{r}
+common_ae <- ae |> distinct(usubjid, .data[[trt]], aedecod) |>
+  count(.data[[trt]], aedecod, name = "participants") |>
+  left_join(denoms, by = trt) |> mutate(percent = 100 * participants / denominator)
+write_csv(common_ae, here("outputs", "tables", "common_adverse_events.csv"))
+
+top_terms <- common_ae |> group_by(aedecod) |> summarise(total = sum(participants), .groups = "drop") |>
+  slice_max(total, n = 10) |> pull(aedecod)
+p <- common_ae |> filter(aedecod %in% top_terms) |>
+  ggplot(aes(reorder(aedecod, percent), percent, fill = .data[[trt]])) +
+  geom_col(position = "dodge") + coord_flip() +
+  labs(x = NULL, y = "Participants (%)", fill = "Treatment") + theme_minimal()
+ggsave(here("outputs", "figures", "top_adverse_events.png"), p, width = 9, height = 6, dpi = 300)
+```
+
+Create serious-event and discontinuation summaries using the confirmed `AESER` and action/withdrawal variables. Always deduplicate participants within each measure.
+

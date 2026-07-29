@@ -1,0 +1,581 @@
+---
+title: "Clinical Trial Efficacy and Safety Analysis"
+subtitle: "CDISC ADaM Pilot 01"
+author: "Sushma Gummadi"
+date: 28.07.2026
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    smooth-scroll: true
+    code-fold: true
+    code-tools: true
+    embed-resources: true
+    self-contained-math: true
+    df-print: paged
+
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+library(here)
+library(gt)
+library(knitr)
+
+options(
+  dplyr.summarise.inform = FALSE,
+  scipen = 999
+)
+
+format_column_names <- function(data) {
+  names(data) |>
+    stringr::str_replace_all("_", " ") |>
+    stringr::str_to_title()
+}
+```
+
+```{r}
+#| label: validate-report-inputs
+#| include: false
+
+required_outputs <- c(
+  here("outputs", "figures", "efficacy_trajectory.png"),
+  here("outputs", "tables", "efficacy_treatment_effects.csv"),
+  here("outputs", "figures", "top_adverse_events.png"),
+  here("outputs", "tables", "overall_safety_summary.csv"),
+  here("outputs", "tables", "discontinuation_summary.csv"),
+  here("outputs", "tables", "week24_completion_summary.csv")
+)
+
+missing_outputs <- required_outputs[
+  !file.exists(required_outputs)
+]
+
+if (length(missing_outputs) > 0) {
+  stop(
+    paste(
+      "The following required report outputs are missing:",
+      paste(missing_outputs, collapse = "\n"),
+      sep = "\n"
+    )
+  )
+}
+```
+
+```{r}
+#| label: import-report-results
+#| include: false
+
+efficacy_effects <- readr::read_csv(
+  here(
+    "outputs",
+    "tables",
+    "efficacy_treatment_effects.csv"
+  ),
+  show_col_types = FALSE
+)
+
+overall_safety <- readr::read_csv(
+  here(
+    "outputs",
+    "tables",
+    "overall_safety_summary.csv"
+  ),
+  show_col_types = FALSE
+)
+
+discontinuation_summary <- readr::read_csv(
+  here(
+    "outputs",
+    "tables",
+    "discontinuation_summary.csv"
+  ),
+  show_col_types = FALSE
+)
+
+week24_completion <- readr::read_csv(
+  here(
+    "outputs",
+    "tables",
+    "week24_completion_summary.csv"
+  ),
+  show_col_types = FALSE
+)
+```
+
+# Executive summary
+
+This report presents a reproducible efficacy and safety analysis using
+the publicly available CDISC ADaM Pilot 01 clinical trial data.
+
+The analysis included 254 participants:
+
+- 86 assigned to placebo;
+- 84 assigned to Xanomeline High Dose; and
+- 84 assigned to Xanomeline Low Dose.
+
+Neither Xanomeline dose demonstrated a statistically significant adjusted
+efficacy difference compared with placebo at Week 24.
+
+Treatment-emergent adverse events were more frequent in both Xanomeline
+groups than in the placebo group. Study discontinuation was also
+substantially higher, while Week 24 completion was lower, in both active
+treatment groups.
+
+Overall, the findings suggest an uncertain efficacy signal accompanied
+by a less favourable tolerability profile for Xanomeline.
+
+# Background and objectives
+
+The purpose of this project was to apply a reproducible clinical-trial
+analytics workflow to publicly available CDISC-standardised data.
+
+The analysis objectives were to:
+
+1. describe the study population;
+2. examine ADAS-Cog(11) scores over time;
+3. estimate adjusted Week 24 treatment differences;
+4. summarise treatment-emergent adverse events;
+5. evaluate study discontinuation;
+6. evaluate Week 24 completion; and
+7. produce a portable clinical-style HTML report.
+
+# Data and methods
+
+## Data source
+
+The analysis used publicly available CDISC ADaM Pilot 01 datasets.
+
+The principal analysis datasets were:
+
+- `ADSL` for participant-level information and treatment assignment;
+- `ADQSADAS` for ADAS-Cog(11) efficacy assessments; and
+- `ADAE` for adverse-event analyses.
+
+Raw data were imported and processed in earlier project notebooks.
+Notebook 5 uses the analysis outputs created by those notebooks.
+
+## Analysis populations
+
+The baseline and efficacy analyses included the 254 randomised
+participants represented in the subject-level analysis dataset.
+
+The safety analysis used participants included in the safety population
+and their actual treatment assignments.
+
+## Efficacy endpoint
+
+The efficacy endpoint was the ADAS-Cog(11) total score.
+
+Higher ADAS-Cog(11) scores indicate greater cognitive impairment.
+Therefore, an increase from baseline represents worsening, while a
+negative active-treatment difference relative to placebo numerically
+favours Xanomeline.
+
+## Statistical methods
+
+Continuous baseline variables were summarised using medians and
+interquartile ranges. Categorical variables were summarised using counts
+and percentages.
+
+The adjusted Week 24 efficacy model included:
+
+- treatment group;
+- baseline ADAS-Cog(11) score;
+- age; and
+- sex.
+
+Placebo was used as the reference treatment.
+
+Adjusted treatment effects are presented with standard errors,
+95% confidence intervals, and exploratory p-values.
+
+Safety outcomes were summarised as the number and percentage of
+participants with at least one event.
+
+# Study population
+
+The randomised population consisted of 254 participants.
+
+Treatment-group sizes were similar:
+
+- Placebo: 86 participants;
+- Xanomeline High Dose: 84 participants;
+- Xanomeline Low Dose: 84 participants.
+
+The treatment groups were broadly comparable with respect to age, race,
+body mass index, education level, and baseline cognitive score. Some
+variation was present in sex distribution and median baseline
+ADAS-Cog(11) score.
+
+# Efficacy results
+
+## ADAS-Cog(11) trajectory
+
+The following figure presents the unadjusted mean ADAS-Cog(11) score
+over time by treatment group.
+
+```{r}
+#| label: fig-efficacy-trajectory
+#| fig-cap: "Mean ADAS-Cog(11) score over time by treatment group."
+#| fig-align: center
+#| out-width: "95%"
+
+knitr::include_graphics(
+  here(
+    "outputs",
+    "figures",
+    "efficacy_trajectory.png"
+  )
+)
+```
+
+Mean ADAS-Cog(11) scores increased over time in all treatment groups,
+indicating worsening cognitive performance.
+
+The raw trajectory should not be interpreted as an adjusted treatment
+comparison because treatment groups differed slightly in their baseline
+scores.
+
+## Adjusted Week 24 treatment effects
+
+```{r}
+#| label: tbl-efficacy-treatment-effects
+#| tbl-cap: "Adjusted Week 24 efficacy treatment effects relative to placebo."
+
+efficacy_gt <- efficacy_effects |>
+  gt() |>
+  cols_label(
+    .list = stats::setNames(
+      format_column_names(efficacy_effects),
+      names(efficacy_effects)
+    )
+  ) |>
+  fmt_number(
+    columns = where(is.numeric),
+    decimals = 3
+  ) |>
+  sub_missing(
+    missing_text = "Not available"
+  ) |>
+  tab_header(
+    title = md("**Adjusted Efficacy Treatment Effects**"),
+    subtitle = "Treatment comparisons relative to placebo"
+  ) |>
+  tab_options(
+    table.width = pct(100),
+    heading.align = "center",
+    column_labels.font.weight = "bold",
+    table.font.size = px(14),
+    data_row.padding = px(6)
+  )
+
+efficacy_gt
+```
+
+For Xanomeline High Dose versus placebo, the adjusted difference was
+−1.085 points, with a 95% confidence interval from −2.627 to 0.458 and
+a p-value of 0.167.
+
+For Xanomeline Low Dose versus placebo, the adjusted difference was
+−0.541 points, with a 95% confidence interval from −2.070 to 0.988 and
+a p-value of 0.486.
+
+Both adjusted estimates numerically favoured Xanomeline because they
+were negative. However, both confidence intervals included zero, and
+neither comparison was statistically significant.
+
+The analysis therefore did not provide conclusive evidence of a Week 24
+treatment effect for either Xanomeline dose.
+
+# Safety results
+
+## Common treatment-emergent adverse events
+
+The following figure presents the most frequently reported
+treatment-emergent adverse events by treatment group.
+
+```{r}
+#| label: fig-top-adverse-events
+#| fig-cap: "Most common treatment-emergent adverse events by treatment group."
+#| fig-align: center
+#| out-width: "95%"
+
+knitr::include_graphics(
+  here(
+    "outputs",
+    "figures",
+    "top_adverse_events.png"
+  )
+)
+```
+
+Several dermatological and application-site events were more frequent
+in the Xanomeline treatment groups than in the placebo group.
+
+## Overall safety summary
+
+```{r}
+#| label: tbl-overall-safety-summary
+#| tbl-cap: "Participants with at least one treatment-emergent adverse event."
+
+overall_safety_gt <- overall_safety |>
+  gt() |>
+  cols_label(
+    .list = stats::setNames(
+      format_column_names(overall_safety),
+      names(overall_safety)
+    )
+  ) |>
+  sub_missing(
+    missing_text = "Not available"
+  ) |>
+  tab_header(
+    title = md("**Overall Treatment-Emergent Adverse Event Summary**"),
+    subtitle = "Participants with at least one event, n (%)"
+  ) |>
+  tab_options(
+    table.width = pct(100),
+    heading.align = "center",
+    column_labels.font.weight = "bold",
+    table.font.size = px(14),
+    data_row.padding = px(6)
+  )
+
+overall_safety_gt
+```
+
+At least one treatment-emergent adverse event occurred in:
+
+- 75.6% of placebo participants;
+- 90.5% of Xanomeline High Dose participants; and
+- 91.7% of Xanomeline Low Dose participants.
+
+Possibly or probably treatment-related events occurred in:
+
+- 50.0% of placebo participants;
+- 83.3% of Xanomeline High Dose participants; and
+- 85.7% of Xanomeline Low Dose participants.
+
+At least one severe treatment-emergent adverse event occurred in:
+
+- 5.8% of placebo participants;
+- 9.5% of Xanomeline High Dose participants; and
+- 19.0% of Xanomeline Low Dose participants.
+
+These findings indicate a less favourable adverse-event profile for both
+Xanomeline treatment groups.
+
+## Study discontinuation
+
+```{r}
+#| label: tbl-discontinuation-summary
+#| tbl-cap: "Study discontinuation by treatment group."
+
+discontinuation_gt <- discontinuation_summary |>
+  gt() |>
+  cols_label(
+    .list = stats::setNames(
+      format_column_names(discontinuation_summary),
+      names(discontinuation_summary)
+    )
+  ) |>
+  sub_missing(
+    missing_text = "Not available"
+  ) |>
+  tab_header(
+    title = md("**Study Discontinuation Summary**")
+  ) |>
+  tab_options(
+    table.width = pct(75),
+    heading.align = "center",
+    column_labels.font.weight = "bold",
+    table.font.size = px(14),
+    data_row.padding = px(6)
+  )
+
+discontinuation_gt
+```
+
+Study discontinuation occurred in:
+
+- 32.6% of placebo participants;
+- 67.9% of Xanomeline High Dose participants; and
+- 70.2% of Xanomeline Low Dose participants.
+
+Discontinuation was therefore more than twice as frequent in both
+Xanomeline groups as in the placebo group.
+
+The available adverse-event data did not support determining which study
+discontinuations were specifically caused by an adverse event because
+the adverse-event action variable was missing.
+
+## Week 24 completion
+
+```{r}
+#| label: tbl-week24-completion
+#| tbl-cap: "Week 24 completion by treatment group."
+
+week24_completion_gt <- week24_completion |>
+  gt() |>
+  cols_label(
+    .list = stats::setNames(
+      format_column_names(week24_completion),
+      names(week24_completion)
+    )
+  ) |>
+  sub_missing(
+    missing_text = "Not available"
+  ) |>
+  tab_header(
+    title = md("**Week 24 Completion Summary**")
+  ) |>
+  tab_options(
+    table.width = pct(75),
+    heading.align = "center",
+    column_labels.font.weight = "bold",
+    table.font.size = px(14),
+    data_row.padding = px(6)
+  )
+
+week24_completion_gt
+```
+
+Week 24 completion was achieved by:
+
+- 69.8% of placebo participants;
+- 35.7% of Xanomeline High Dose participants; and
+- 33.3% of Xanomeline Low Dose participants.
+
+The lower completion rates in the active-treatment groups correspond
+with their substantially higher discontinuation rates.
+
+# Data-quality observations
+
+A review of fatal and serious adverse-event records identified an
+apparent source-data inconsistency.
+
+Some adverse-event records with a fatal outcome were not classified as
+serious events in the source data.
+
+The source records were retained without modification. The inconsistency
+should be considered when interpreting serious and fatal adverse-event
+summaries.
+
+The adverse-event action variable was completely missing. Therefore,
+the analysis could not determine directly whether individual study
+discontinuations were caused by adverse events.
+
+# Validation
+
+The report inputs were validated before the analysis sections were
+rendered.
+
+Validation checks included:
+
+- confirmation that all required CSV and PNG outputs existed;
+- treatment denominator checks;
+- participant-level adverse-event deduplication;
+- endpoint and visit checks;
+- missing-value checks;
+- confidence-interval review; and
+- regression diagnostic review.
+
+Formal independent SAS reproduction has not yet been completed.
+Therefore, the project should be described as internally validated in R
+rather than independently validated in both R and SAS.
+
+# Limitations
+
+This analysis has several limitations.
+
+First, it used a public pilot dataset intended for education, standards
+development, and software demonstration. It should not be interpreted as
+a regulatory analysis or a definitive reanalysis of the original
+clinical trial.
+
+Second, the analyses were exploratory and were not based on a
+prespecified regulatory statistical analysis plan.
+
+Third, the Week 24 efficacy model used an analysis of change from
+baseline rather than a longitudinal mixed model.
+
+Fourth, no independent missing-data sensitivity analysis was performed.
+
+Fifth, study discontinuation was substantially higher in both
+Xanomeline treatment groups. This creates an important interpretive
+concern because results for participants who remained in the analysis
+may not fully represent participants who discontinued treatment.
+
+Sixth, the adverse-event data contained an apparent inconsistency
+between fatal outcome and serious-event classifications.
+
+Finally, formal independent SAS validation remains pending.
+
+# Conclusion
+
+Neither Xanomeline dose demonstrated a statistically significant
+adjusted efficacy difference compared with placebo at Week 24.
+
+Both treatment estimates numerically favoured Xanomeline, but their
+95% confidence intervals included zero.
+
+Xanomeline-treated participants experienced higher rates of
+treatment-emergent adverse events, treatment-related events, severe
+events, and study discontinuation than placebo-treated participants.
+
+Both Xanomeline groups also had substantially lower Week 24 completion
+rates.
+
+Overall, the results suggest an uncertain efficacy signal accompanied
+by a clear tolerability disadvantage for Xanomeline in this exploratory
+public-data analysis.
+
+# Reproducibility information
+
+```{r}
+#| label: package-information
+#| echo: false
+
+package_versions <- tibble::tibble(
+  Package = c(
+    "R",
+    "tidyverse",
+    "here",
+    "gt",
+    "knitr",
+    "quarto"
+  ),
+  Version = c(
+    paste(
+      R.version$major,
+      R.version$minor,
+      sep = "."
+    ),
+    as.character(packageVersion("tidyverse")),
+    as.character(packageVersion("here")),
+    as.character(packageVersion("gt")),
+    as.character(packageVersion("knitr")),
+    as.character(packageVersion("quarto"))
+  )
+)
+
+package_versions |>
+  gt::gt() |>
+  gt::tab_header(
+    title = gt::md("**Software Versions**")
+  ) |>
+  gt::tab_options(
+    table.width = gt::pct(60)
+  )
+```

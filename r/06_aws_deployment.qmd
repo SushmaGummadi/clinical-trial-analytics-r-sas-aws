@@ -1,0 +1,179 @@
+---
+title: "06_aws_deployment"
+format: html
+---
+
+---
+title: "AWS Deployment"
+subtitle: "Deploying the Clinical Trial Report with Amazon S3"
+author: "Sushma Gummadi"
+date: today
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    embed-resources: true
+
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+# Overview
+
+This notebook documents the deployment of the final CDISC ADaM Pilot 01
+clinical trial report as a static website using Amazon Simple Storage
+Service, or Amazon S3.
+
+The analytical work and final report were created locally using R and
+Quarto. The rendered, self-contained HTML report was then deployed to
+Amazon S3 for public portfolio access.
+
+# Deployment architecture
+
+The deployment workflow was:
+
+1. Analysis datasets were processed in R.
+2. Tables and figures were generated in R.
+3. Quarto rendered the final report as a self-contained HTML file.
+4. The report was copied and renamed to `index.html`.
+5. The file was uploaded to an Amazon S3 bucket.
+6. Static website hosting was enabled for the bucket.
+7. Public read access was configured for the website object.
+8. The S3 website endpoint was tested in a web browser.
+
+# Local report preparation
+
+```{r}
+#| label: verify-local-report
+
+library(here)
+
+report_path <- here(
+  "reports",
+  "r",
+  "05_final_report.html"
+)
+
+file.exists(report_path)
+
+file.info(report_path)[
+  ,
+  c(
+    "size",
+    "mtime"
+  )
+]
+```
+
+# Prepare the deployment directory
+
+```{r}
+#| label: prepare-deployment-file
+
+deployment_directory <- here("aws-site")
+
+dir.create(
+  deployment_directory,
+  showWarnings = FALSE,
+  recursive = TRUE
+)
+
+deployment_file <- file.path(
+  deployment_directory,
+  "index.html"
+)
+
+file.copy(
+  from = report_path,
+  to = deployment_file,
+  overwrite = TRUE
+)
+
+stopifnot(
+  file.exists(deployment_file)
+)
+
+file.info(deployment_file)[
+  ,
+  c(
+    "size",
+    "mtime"
+  )
+]
+```
+
+# AWS service
+
+Amazon S3 was used to host the final static HTML report.
+
+A general-purpose S3 bucket was created for this portfolio project. The
+self-contained report was uploaded as `index.html`, and static website
+hosting was configured with `index.html` as the index document.
+
+The deployment used only public-read permission for the hosted report.
+No AWS access keys, passwords, or confidential data were stored in the
+project repository.
+
+# Deployed asset
+
+The deployed website contains the final integrated clinical report,
+including:
+
+- study background and objectives;
+- analysis methods;
+- adjusted efficacy results;
+- treatment-emergent adverse-event summaries;
+- discontinuation and completion summaries;
+- data-quality observations;
+- limitations; and
+- conclusions.
+
+Because Quarto embedded the figures, styles, and supporting resources in
+the final HTML document, only one report file was required for the basic
+S3 deployment.
+
+# Validation
+
+Deployment validation included:
+
+- confirming the local report existed;
+- confirming the copied `index.html` existed;
+- comparing local and deployment file sizes;
+- confirming the object was uploaded to S3;
+- opening the S3 static website endpoint;
+- checking table-of-contents navigation;
+- confirming all tables rendered;
+- confirming both figures rendered; and
+- testing the website in a separate browser window.
+
+# Security considerations
+
+Only public portfolio outputs were deployed.
+
+The following items were not uploaded:
+
+- raw credentials;
+- AWS access keys;
+- local R session files;
+- confidential data;
+- project source datasets; and
+- files containing personal or sensitive information.
+
+# Limitations
+
+The basic Amazon S3 website endpoint does not provide the same security
+and custom-domain features as a production website deployment.
+
+A future enhancement could use Amazon CloudFront to provide HTTPS,
+caching, and a secure distribution in front of a private S3 bucket.
+
+# Conclusion
+
+The project demonstrates an end-to-end workflow covering clinical data
+analysis, reproducible reporting, and cloud-based publication.
+
+R and Quarto were used to create the analytical outputs and report, while
+Amazon S3 was used to deploy the final report as a static website.
