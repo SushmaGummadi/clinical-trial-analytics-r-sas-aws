@@ -1,4 +1,5 @@
-# Clinical Trial Analytics Using R, SAS and AWS
+# Title: Clinical Trial Analytics Using R
+Technologies (R, tidyverse, Quarto, gt, ggplot2, and CDISC ADaM): AWS S3 (static hosting for final report)
 
 ## Project Overview
 
